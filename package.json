@@ -1,0 +1,38 @@
+{
+  "name": "learn-gql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "./start-db.sh && yarn watch",
+    "compile": "tsc",
+    "watch": "rm -fr ./dist && tsc-watch --onSuccess \"node ./dist/index.js\"",
+    "start": "node ./dist/index.js",
+    "migrate": "npx mikro-orm migration:create -i"
+  },
+  "keywords": [],
+  "author": "",
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.7.16",
+    "nodemon": "^2.0.19",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "tsc-watch": "^5.0.3",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "@mikro-orm/core": "^5.4.1",
+    "@mikro-orm/mongo-highlighter": "^1.0.0",
+    "@mikro-orm/mongodb": "^5.4.1",
+    "@mikro-orm/reflection": "^5.4.1",
+    "mongodb": "^4.9.1"
+  }
+}
