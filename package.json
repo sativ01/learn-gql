@@ -9,9 +9,10 @@
     "watch": "rm -fr ./dist && tsc-watch --onSuccess \"node ./dist/index.js\"",
     "start": "node ./dist/index.js",
     "migrate": "npx mikro-orm migration:create -i",
-    "fix-lint": "eslint --fix src/**",
-    "pre-commit": "echo precommit && yarn fix-lint"
+    "fix-lint": "eslint --fix src/**"
   },
+
+  "pre-commit": ["echo precommit",  "yarn fix-lint"]
   "keywords": [],
   "author": "",
   "mikro-orm": {
@@ -30,6 +31,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "^7.31.8",
     "nodemon": "^2.0.19",
+    "pre-commit": "^1.2.2",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
     "tsc-watch": "^5.0.3",
