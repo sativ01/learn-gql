@@ -12,7 +12,7 @@
     "fix-lint": "eslint --fix src/**"
   },
 
-  "pre-commit": ["echo precommit",  "yarn fix-lint"]
+  "pre-commit": "fix-lint",
   "keywords": [],
   "author": "",
   "mikro-orm": {
