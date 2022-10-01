@@ -8,7 +8,9 @@
     "compile": "tsc",
     "watch": "rm -fr ./dist && tsc-watch --onSuccess \"node ./dist/index.js\"",
     "start": "node ./dist/index.js",
-    "migrate": "npx mikro-orm migration:create -i"
+    "migrate": "npx mikro-orm migration:create -i",
+    "fix-lint": "eslint --fix src/**",
+    "pre-commit": "echo precommit && yarn fix-lint"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.7.16",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-react": "^7.31.8",
     "nodemon": "^2.0.19",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",

@@ -1,30 +1,30 @@
-import { Collection, Entity, OneToMany, Property } from "@mikro-orm/core";
-import { BaseEntity } from "./BaseEntity";
-import { Post } from "./Post";
+import { Collection, Entity, OneToMany, Property } from '@mikro-orm/core'
+import { BaseEntity } from './BaseEntity'
+import { Post } from './Post'
 
 @Entity()
 export class Author extends BaseEntity {
   @Property()
-  name!: string;
+  	name!: string
 
   @Property()
-  email!: string;
+  	email!: string
 
   @Property()
-  age?: number;
+  	age?: number
 
   @Property()
-  termsAccepted = false;
+  	termsAccepted = false
 
   @Property()
-  born?: Date;
+  	born?: Date
 
   @OneToMany(() => Post, (post) => post.author)
-  posts = new Collection<Post>(this);
+  	posts = new Collection<Post>(this)
 
   constructor(name: string, email: string) {
-    super();
-    this.name = name;
-    this.email = email;
+  	super()
+  	this.name = name
+  	this.email = email
   }
 }
