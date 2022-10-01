@@ -26,7 +26,7 @@ export class Author extends BaseEntity {
   @Property()
   	born?: Date
 
-  @Field(() => [Post])
+  @Field(() => [Post], {nullable: true})
   @OneToMany(() => Post, (post) => post.author)
   	posts = new Collection<Post>(this)
 
