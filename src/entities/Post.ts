@@ -1,24 +1,21 @@
 import {
 	Entity,
 	ManyToOne,
-	PrimaryKey,
 	Property,
-	SerializedPrimaryKey,
 } from '@mikro-orm/core'
-import { ObjectId } from '@mikro-orm/mongodb'
+import { Field, ObjectType } from 'type-graphql'
 import { Author } from './Author'
+import { BaseEntity } from './BaseEntity'
 
+@ObjectType()
 @Entity()
-export class Post {
-  @PrimaryKey()
-  	_id!: ObjectId
+export class Post extends BaseEntity {
 
-  @SerializedPrimaryKey()
-  	id!: string // string variant of PK, will be handled automatically
-
+  @Field()
   @Property()
   	title!: string
 
+  @Field(() => Author)
   @ManyToOne()
   	author!: Author
 }
