@@ -72,6 +72,21 @@ export class AuthorResolver {
   	return null
   }
 
+  @Mutation(() => Author, {nullable: true})
+  async deleteAuthor(
+      @Ctx() {em}: AppContext,
+      @Arg('id', () => String) id: string,
+  ): Promise<Author | null> {
+	  const authorRepository = em.getRepository(Author)
+  	const author = await authorRepository.findOne({id})
+  	if(author){
+		  authorRepository.remove(author)
+		  return author
+  	}
+  	return null
+  }
+  
+
   @Query(() => [Author])
   authors(
 	  @Ctx() {em}: AppContext
