@@ -10,40 +10,40 @@ import { AuthorResolver } from './resolvers/authors'
 
 
 const main = async () => {
-	const orm = await MikroORM.init(mikroOrmConfig)
-	// await orm.getMigrator().up();
+  const orm = await MikroORM.init(mikroOrmConfig)
+  // await orm.getMigrator().up();
 
-	const em = orm.em.fork()
-	const app = express()
-	const apollo = new ApolloServer({
-		schema: await buildSchema({
-			resolvers: [HelloResolver, AuthorResolver],
-			validate: false,
-		}),
-		context: {
-			em
-		}
-	})
+  const em = orm.em.fork()
+  const app = express()
+  const apollo = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver, AuthorResolver],
+      validate: false,
+    }),
+    context: {
+      em
+    }
+  })
 
 
-	app.listen(4000, () => {
-		console.log('server started on port 3999')
-	})
+  app.listen(4000, () => {
+    console.log('server started on port 3999')
+  })
 
-	await apollo.start()
-	apollo.applyMiddleware({app})
+  await apollo.start()
+  apollo.applyMiddleware({app})
 
-	const authorRepository = em.getRepository(Author)
-	// const postRepository = em.getRepository(Post);
-	// const authorObj = new Author('John', 'john@email.com')
-	// const author = authorRepository.create(authorObj)
-	// await authorRepository.persist(author).flush()
+  const authorRepository = em.getRepository(Author)
+  // const postRepository = em.getRepository(Post);
+  // const authorObj = new Author('John', 'john@email.com')
+  // const author = authorRepository.create(authorObj)
+  // await authorRepository.persist(author).flush()
 
-	const authors = await authorRepository.findAll({
-		populate: ['posts'],
-		orderBy: { name: QueryOrder.DESC },
-		limit: 20,
-	})
-	console.log(authors)
+  const authors = await authorRepository.findAll({
+    populate: ['posts'],
+    orderBy: { name: QueryOrder.DESC },
+    limit: 20,
+  })
+  console.log(authors)
 }
 main().catch((err) => console.log(err))

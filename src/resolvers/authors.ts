@@ -32,13 +32,13 @@ class UpdateAuthorArgs {
 @Resolver()
 export class AuthorResolver {
   @Query(() => Author, {nullable: true})
-	author(
+  author(
 	  @Ctx() {em}: AppContext,
 	  @Arg('id', () => String) id: string,
-	): Promise<Author | null> {
+  ): Promise<Author | null> {
 	  const authorRepository = em.getRepository(Author)
-		return authorRepository.findOne({id})
-	}
+    return authorRepository.findOne({id})
+  }
 
   @Mutation(() => Author)
   async createAuthor(
