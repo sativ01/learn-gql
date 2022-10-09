@@ -1,8 +1,4 @@
-import {
-  Entity,
-  ManyToOne,
-  Property,
-} from '@mikro-orm/core'
+import { Entity, ManyToOne, Property } from '@mikro-orm/core'
 import { Field, ObjectType } from 'type-graphql'
 import { Author } from './Author'
 import { BaseEntity } from './BaseEntity'
@@ -10,12 +6,22 @@ import { BaseEntity } from './BaseEntity'
 @ObjectType()
 @Entity()
 export class Post extends BaseEntity {
+  @Field()
+  @Property()
+    title!: string
 
   @Field()
   @Property()
-  	title!: string
+    content!: string
 
   @Field(() => Author)
   @ManyToOne()
-  	author!: Author
+    author!: Author
+
+  constructor(author: Author, title: string, content: string){
+    super()
+    this.author = author
+    this.title = title
+    this.content = content
+  }
 }

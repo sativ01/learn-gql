@@ -1,7 +1,6 @@
 import { Options } from '@mikro-orm/core'
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
-import { Author } from './entities/Author'
-import { Post } from './entities/Post'
+import { entities } from './entities'
 
 const options: Options = {
   dbName: 'learngql',
@@ -10,7 +9,7 @@ const options: Options = {
   user: 'root',
   password: 'rootpassword',
   metadataProvider: TsMorphMetadataProvider,
-  entities: [Author, Post], // path to our JS entities (dist), relative to `baseDir`
+  entities , // path to our JS entities (dist), relative to `baseDir`
   // entitiesTs: ["./src/entities/**/*.ts"], // path to our TS entities (source), relative to `baseDir`
 }
 

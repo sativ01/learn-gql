@@ -6,17 +6,17 @@ import { Field, ObjectType } from 'type-graphql'
 export abstract class BaseEntity {
   @Field(() => String)
   @PrimaryKey()
-  	_id!: ObjectId
+    _id!: ObjectId
 
   @Field()
   @SerializedPrimaryKey()
-  	id!: string
+    id!: string
 
   @Field(() => String)
   @Property()
-  	createdAt = new Date()
+    createdAt = new Date()
 
   @Field(() => String)
   @Property({ onUpdate: () => new Date() })
-  	updatedAt = new Date()
+    updatedAt = new Date()
 }

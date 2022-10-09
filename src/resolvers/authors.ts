@@ -1,102 +1,108 @@
-
 import { QueryOrder } from '@mikro-orm/core'
 import { Author } from '../entities/Author'
-import {AppContext} from '../types'
-import { Arg, Args, Ctx, Field, Mutation, Query, Resolver, ArgsType} from 'type-graphql'
+import { AppContext } from '../types'
+import {
+  Arg,
+  Args,
+  Ctx,
+  Field,
+  Mutation,
+  Query,
+  Resolver,
+  ArgsType,
+} from 'type-graphql'
 import { MaxLength } from 'class-validator'
-
+import { UserRergisterArgs, UserResolver } from './users'
 
 @ArgsType()
-class NewAuthorArgs {
-  @Field(() => String)
-  	name: string
-
-  @Field(() => String)
-  	email: string
+class NewAuthorArgs extends UserRergisterArgs {
+  @Field()
+    name: string
 }
 
 @ArgsType()
 class UpdateAuthorArgs {
   @Field()
-  	id: string
+    id: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   @MaxLength(30)
-  	name?: string
+    name?: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   @MaxLength(30)
-  	email?: string
+    email?: string
 }
 
 @Resolver()
-export class AuthorResolver {
-  @Query(() => Author, {nullable: true})
+export class AuthorResolver extends UserResolver {
+  @Query(() => Author, { nullable: true })
   author(
-	  @Ctx() {em}: AppContext,
-	  @Arg('id', () => String) id: string,
+    @Ctx() { em }: AppContext,
+    @Arg('id', () => String) id: string
   ): Promise<Author | null> {
-	  const authorRepository = em.getRepository(Author)
-    return authorRepository.findOne({id})
+    const authorRepository = em.getRepository(Author)
+    return authorRepository.findOne({ id })
   }
 
   @Mutation(() => Author)
   async createAuthor(
-	  @Ctx() {em}: AppContext,
-	  @Args() {name, email}: NewAuthorArgs,
+    @Ctx() { em }: AppContext,
+    @Args() { name, email, userName, password }: NewAuthorArgs
   ): Promise<Author> {
-	  const authorRepository = em.getRepository(Author)
-	  const authorObj = new Author(name, email)
-	  const author = authorRepository.create(authorObj)
-	  await authorRepository.persist(author).flush()
-	  return author
+    try {
+      await this.register({ em }, { userName, password, email })
+      const authorObj = new Author(name, email, userName, password)
+      const authorRepository = em.getRepository(Author)
+      const author = authorRepository.create(authorObj)
+      await authorRepository.persist(author).flush()
+      return author
+    } catch (err) {
+      throw new Error('Error registering new Author: ${err}')
+    }
   }
 
-  @Mutation(() => Author, {nullable: true})
+  @Mutation(() => Author, { nullable: true })
   async updateAuthor(
-	  @Ctx() {em}: AppContext,
-	  @Args() {id, name, email}: UpdateAuthorArgs,
+    @Ctx() { em }: AppContext,
+    @Args() { id, name, email }: UpdateAuthorArgs
   ): Promise<Author | null> {
-	  const authorRepository = em.getRepository(Author)
-  	const author = await authorRepository.findOne({id})
-  	if(author){
-		  if(name){
-		    author.name = name
-		  }
-		  if(email){
-		    author.email = email
-		  }
-		  await authorRepository.persistAndFlush(author)
-		  return author
-  	}
-  	return null
+    const authorRepository = em.getRepository(Author)
+    const author = await authorRepository.findOne({ id })
+    if (author) {
+      if (name) {
+        author.name = name
+      }
+      if (email) {
+        author.email = email
+      }
+      await authorRepository.persistAndFlush(author)
+      return author
+    }
+    return null
   }
 
-  @Mutation(() => Author, {nullable: true})
+  @Mutation(() => Author, { nullable: true })
   async deleteAuthor(
-      @Ctx() {em}: AppContext,
-      @Arg('id', () => String) id: string,
+    @Ctx() { em }: AppContext,
+    @Arg('id', () => String) id: string
   ): Promise<Author | null> {
-	  const authorRepository = em.getRepository(Author)
-  	const author = await authorRepository.findOne({id})
-  	if(author){
-		  authorRepository.remove(author)
-		  return author
-  	}
-  	return null
+    const authorRepository = em.getRepository(Author)
+    const author = await authorRepository.findOne({ id })
+    if (author) {
+      authorRepository.remove(author)
+      return author
+    }
+    return null
   }
-  
 
   @Query(() => [Author])
-  authors(
-	  @Ctx() {em}: AppContext
-  ): Promise<Author[]> {
-	  const authorRepository = em.getRepository(Author)
-  	return  authorRepository.findAll({
-  		populate: ['posts'],
-  		orderBy: { name: QueryOrder.DESC },
-  		limit: 20,
-  	})
+  authors(@Ctx() { em }: AppContext): Promise<Author[]> {
+    const authorRepository = em.getRepository(Author)
+    return authorRepository.findAll({
+      populate: ['posts'],
+      orderBy: { name: QueryOrder.DESC },
+      limit: 20,
+    })
   }
-
 }

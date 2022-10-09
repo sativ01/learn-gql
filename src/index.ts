@@ -1,13 +1,13 @@
 import { MikroORM, QueryOrder } from '@mikro-orm/core'
 import { Author } from './entities/Author'
 import express from 'express'
-import {ApolloServer} from 'apollo-server-express'
-import {buildSchema} from 'type-graphql'
+import { ApolloServer } from 'apollo-server-express'
+import { buildSchema } from 'type-graphql'
 // import { Post } from "./entities/Post";
 import mikroOrmConfig from './mikro-orm.config'
-import { HelloResolver } from './resolvers/hello'
 import { AuthorResolver } from './resolvers/authors'
-
+import { UserResolver } from './resolvers/users'
+import { PostResolver } from './resolvers/posts'
 
 const main = async () => {
   const orm = await MikroORM.init(mikroOrmConfig)
@@ -17,21 +17,20 @@ const main = async () => {
   const app = express()
   const apollo = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, AuthorResolver],
+      resolvers: [UserResolver, PostResolver, AuthorResolver],
       validate: false,
     }),
     context: {
-      em
-    }
+      em,
+    },
   })
 
-
   app.listen(4000, () => {
-    console.log('server started on port 3999')
+    console.log('server started on port 4000')
   })
 
   await apollo.start()
-  apollo.applyMiddleware({app})
+  apollo.applyMiddleware({ app })
 
   const authorRepository = em.getRepository(Author)
   // const postRepository = em.getRepository(Post);
