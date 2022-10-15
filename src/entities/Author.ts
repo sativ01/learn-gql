@@ -1,12 +1,13 @@
-import { Collection, Entity, OneToMany, Property } from '@mikro-orm/core'
+import { Collection, Entity, OneToMany, OneToOne, Property } from '@mikro-orm/core'
 import { Field, ObjectType } from 'type-graphql'
 import { User } from './User'
 import { Post } from './Post'
 import { MaxLength } from 'class-validator'
+import { BaseEntity } from './BaseEntity'
 
 @ObjectType()
 @Entity()
-export class Author extends User {
+export class Author extends BaseEntity {
   @Field()
   @MaxLength(40)
     name!: string
@@ -19,20 +20,24 @@ export class Author extends User {
   @Property()
     born?: Date
 
+  @Field()
+  @OneToOne()
+    user!: User
+
   @Field(() => [Post], { nullable: true })
   @OneToMany(() => Post, (post) => post.author)
     posts = new Collection<Post>(this)
 
   constructor(
+    user: User,
     name: string,
-    email: string,
-    userName: string,
-    passwordHash: string
+    born?: Date,
+    termsAccepted?:boolean
   ) {
-    super(email, userName, passwordHash)
+    super()
+    this.user = user
     this.name = name
-    this.email = email
-    this.userName = userName
-    this.passwordHash = passwordHash
+    this.born = born
+    this.termsAccepted = !!termsAccepted
   }
 }

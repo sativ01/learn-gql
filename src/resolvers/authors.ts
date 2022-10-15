@@ -51,8 +51,8 @@ export class AuthorResolver extends UserResolver {
     @Args() { name, email, userName, password }: NewAuthorArgs
   ): Promise<Author> {
     try {
-      await this.register({ em }, { userName, password, email })
-      const authorObj = new Author(name, email, userName, password)
+      const user = await this.register({ em }, { userName, password, email })
+      const authorObj = new Author(user, name)
       const authorRepository = em.getRepository(Author)
       const author = authorRepository.create(authorObj)
       await authorRepository.persist(author).flush()
@@ -74,7 +74,7 @@ export class AuthorResolver extends UserResolver {
         author.name = name
       }
       if (email) {
-        author.email = email
+        author.user.email = email
       }
       await authorRepository.persistAndFlush(author)
       return author
