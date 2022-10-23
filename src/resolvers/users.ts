@@ -84,7 +84,7 @@ export class UserResolver {
 
   @Mutation(() => UserResponse, { nullable: true })
   async login(
-    @Ctx() { em }: AppContext,
+    @Ctx() { em, req }: AppContext,
     @Args() { userName, password, email }: UserLoginArgs
   ): Promise<UserResponse> {
     const userRepository = em.getRepository(User)
@@ -97,6 +97,9 @@ export class UserResolver {
         if(!isValidPassword){
           throw new Error('Incorrect password')
         }
+
+        req.session.userId = user.id
+
       } catch (err) {
         error = {field: 'password', message: err.message} 
         errors.push(error)
@@ -106,6 +109,8 @@ export class UserResolver {
       errors.push(error)
       user = undefined
     }
+
+
     return {user, errors}
   }
 

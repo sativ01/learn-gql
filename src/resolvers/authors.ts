@@ -47,11 +47,11 @@ export class AuthorResolver extends UserResolver {
 
   @Mutation(() => Author)
   async createAuthor(
-    @Ctx() { em }: AppContext,
+    @Ctx() { em, req, res }: AppContext,
     @Args() { name, email, userName, password }: NewAuthorArgs
   ): Promise<Author> {
     try {
-      const {user, errors} = await this.register({ em }, { userName, password, email })
+      const {user, errors} = await this.register({ em, req, res }, { userName, password, email })
 
       if(errors || !user){
         throw new Error(`Could not create an author. Error(s) ${errors?.join('\n')} `)
