@@ -51,14 +51,19 @@ export class AuthorResolver extends UserResolver {
     @Args() { name, email, userName, password }: NewAuthorArgs
   ): Promise<Author> {
     try {
-      const user = await this.register({ em }, { userName, password, email })
+      const {user, errors} = await this.register({ em }, { userName, password, email })
+
+      if(errors || !user){
+        throw new Error(`Could not create an author. Error(s) ${errors?.join('\n')} `)
+      }
+
       const authorObj = new Author(user, name)
       const authorRepository = em.getRepository(Author)
       const author = authorRepository.create(authorObj)
       await authorRepository.persist(author).flush()
       return author
     } catch (err) {
-      throw new Error('Error registering new Author: ${err}')
+      throw new Error(`Error registering new Author: ${err}`)
     }
   }
 
